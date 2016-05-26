@@ -4,7 +4,7 @@ using System.Collections;
 
 public class UIController : MonoBehaviour {
 
-	private const string PLAYER_GOAL_TEXT = "name goal!";
+	private const string PLAYER_GOAL_TEXT = "%name% scores!";
 
 	private Text player1Text;
 	private Text player2Text;
@@ -71,7 +71,7 @@ public class UIController : MonoBehaviour {
 
 	public void EnableGoalText(PlayerData plData){
 		string goalStr = PLAYER_GOAL_TEXT;
-		goalStr = goalStr.Replace("name", plData.playerName);
+		goalStr = goalStr.Replace("%name%", plData.playerName);
 		playerIcon.sprite = plData.playerSprite;
 		goalText.text = goalStr;
 		goalPanel.SetActive(true);

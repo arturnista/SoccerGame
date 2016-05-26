@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
-	public Sprite pl1icn;
-	public Sprite pl2icn;
+	private bool gameStarted;
 
 	private PlayerData player1Data;
 	private PlayerData player2Data;
@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour {
 	private float gameTime;
 	private float initTime;
 
-	private float playerTime = 10f;
+	private float playerTime = 7f;
 	private float initPlayerTime;
 
 	public GameObject playerPrefab;
@@ -33,19 +33,12 @@ public class GameController : MonoBehaviour {
 		GameObject ballOb = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		ball = ballOb.GetComponent<Ball>();
 
-		player1Data = new PlayerData();
-		player1Data.playerName = "PLAYER 1";
-		player1Data.playerGoals = 0;
-		player1Data.playerController = General.PlayerController.Human;
-		player1Data.playerNumber = General.PlayerNumber.Player1;
-		player1Data.playerSprite = pl1icn;
+		TeamTransporter tTransp = GameObject.FindObjectOfType<TeamTransporter>();
+		player1Data = tTransp.PlayerData1();
+		player2Data = tTransp.PlayerData2();
+		tTransp.Destroy();
 
-		player2Data = new PlayerData();
-		player2Data.playerName = "PLAYER 2";
-		player2Data.playerGoals = 0;
-		player2Data.playerController = General.PlayerController.Human;
-		player2Data.playerNumber = General.PlayerNumber.Player2;
-		player2Data.playerSprite = pl2icn;
+		gameStarted = false;
 	}
 
 	void Start () {
@@ -70,6 +63,7 @@ public class GameController : MonoBehaviour {
 			pl.Lock();
 		}
 		ball.Lock();
+		gameStarted = false;
 
 		uiController.EnableFinishGameText();
 	}
@@ -135,6 +129,8 @@ public class GameController : MonoBehaviour {
 					p2Offensive.Add(stPos);
 				}
 			}
+
+			gameStarted = true;
 		}
 
 		for (int i = 0; i < p1Normal.Count; i++) {
@@ -200,6 +196,10 @@ public class GameController : MonoBehaviour {
 		initPlayerTime = Time.time;
 	}
 
+	public bool IsGameStarted(){
+		return gameStarted;
+	}
+
 	public float GetRemainingTime(){
 		return Mathf.Clamp(gameTime - (Time.time - initTime), 0f, gameTime);
 	}
@@ -210,5 +210,9 @@ public class GameController : MonoBehaviour {
 
 	public float GetRemainingPlayerTimeProp(){
 		return Mathf.Clamp(playerTime - (Time.time - initPlayerTime), 0f, playerTime) / playerTime;
+	}
+
+	public void CloseGame(){
+		SceneManager.LoadScene("Menu");
 	}
 }

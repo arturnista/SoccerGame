@@ -28,6 +28,14 @@ public class General : MonoBehaviour {
 		return Camera.main.ScreenToWorldPoint(Input.mousePosition);
 	}
 
+	public static Vector3 GetDirectionBetweenPosition(Vector3 current, Vector3 target){
+		float ang = General.AngleBetweenPosition(current, target) + 90f;
+		float angRad = ang * Mathf.Deg2Rad;
+
+		Vector3 dir = new Vector3(Mathf.Cos(angRad), Mathf.Sin(angRad));
+		return dir;
+	}
+
 	public static Transform GetParent(string parentName){
 		GameObject parent = GameObject.Find(parentName);
 		if(!parent){
@@ -37,7 +45,11 @@ public class General : MonoBehaviour {
 	}
 
 	public static Vector3 GetCameraSize() {
-		float quadHeight = Camera.main.orthographicSize * 2f;
+		return GetCameraSize(Camera.main);
+	}
+
+	public static Vector3 GetCameraSize(Camera cam) {
+		float quadHeight = cam.orthographicSize * 2f;
 		float quadWidth = quadHeight * Screen.width / Screen.height;
 		return new Vector3(quadWidth, quadHeight, 1f);
 	}

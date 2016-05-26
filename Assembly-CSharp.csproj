@@ -45,15 +45,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Controllers\CameraController\CameraController.cs" />
      <Compile Include="Assets\Controllers\GameController\GameController.cs" />
+     <Compile Include="Assets\Controllers\MenuController\MenuUIController.cs" />
+     <Compile Include="Assets\Controllers\MenuController\TeamSelector.cs" />
+     <Compile Include="Assets\Controllers\MenuController\TeamTransporter.cs" />
      <Compile Include="Assets\Controllers\PlayerConfig\PlayerData.cs" />
      <Compile Include="Assets\Controllers\UIController\UIController.cs" />
      <Compile Include="Assets\Entities\Ball\Ball.cs" />
      <Compile Include="Assets\Entities\Field\Goal.cs" />
      <Compile Include="Assets\Entities\Player\Player.cs" />
+     <Compile Include="Assets\Entities\Player\PlayerIA.cs" />
      <Compile Include="Assets\Scripts\General.cs" />
      <Compile Include="Assets\Scripts\SoccerPhysics.cs" />
      <Compile Include="Assets\StartPosition\StartPosition.cs" />
+     <Compile Include="Assets\TeamDatabase\Team.cs" />
+     <Compile Include="Assets\TeamDatabase\TeamDatabase.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

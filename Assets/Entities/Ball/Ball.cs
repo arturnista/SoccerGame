@@ -26,4 +26,8 @@ public class Ball : MonoBehaviour {
 	public void Free(){
 		thisRigidbody.constraints = RigidbodyConstraints2D.None;
 	}
+
+	public Vector3 GetDirection(){
+		return thisRigidbody.velocity.normalized;
+	}
 }

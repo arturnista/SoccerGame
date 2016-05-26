@@ -13,11 +13,15 @@ public class Player : MonoBehaviour {
 	private bool isAiming;
 	private const float padding = .5f;
 
+	// Variables from IA
+	private PlayerIA playerIA;
+
 	// Variables from game
 	private GameController gameController;
 	private SpriteRenderer spriteRenderer;
 
 	private bool nonPlayable;
+	private bool currentPlayer;
 	private PlayerData playerData;
 
 	private StartPosition normalStart;
@@ -30,6 +34,8 @@ public class Player : MonoBehaviour {
 
 		thisRigidbody = GetComponent<Rigidbody2D>();
 		mass = thisRigidbody.mass;
+
+		playerIA = GetComponent<PlayerIA>();
 
 		isAiming = false;
 		// In the start the player is not playable
@@ -61,16 +67,17 @@ public class Player : MonoBehaviour {
 		Vector3 mousePos = General.GetMousePosition();
 		float distance = Vector2.Distance(transform.position, mousePos);
 		if(distance > padding){
-			float force = Mathf.Clamp(distance * THROW_FORCE, 0f, MAXIMUM_FORCE);
+			Vector3 dir = General.GetDirectionBetweenPosition(transform.position, General.GetMousePosition());
 
-			float ang = General.AngleBetweenPosition(transform.position, General.GetMousePosition()) + 90f;
-			float angRad = ang * Mathf.Deg2Rad;
-
-			Vector3 dir = new Vector3(Mathf.Cos(angRad), Mathf.Sin(angRad));
-			thisRigidbody.velocity = dir * force;
-
-			gameController.SwitchCurrentPlayer();
+			Shoot(dir, distance);
 		}
+	}
+
+	public void Shoot(Vector3 dir, float distance){
+		float force = Mathf.Clamp(distance * THROW_FORCE, 0f, MAXIMUM_FORCE);
+		thisRigidbody.velocity = dir * force;
+
+		gameController.SwitchCurrentPlayer();
 	}
 
 	public void Restart(bool isNormal){
@@ -99,9 +106,10 @@ public class Player : MonoBehaviour {
 
 	public void SetPlayerData(PlayerData plrData){
 		playerData = plrData;
+		playerIA.enabled = false;
 		if(playerData.playerController == General.PlayerController.Computer){
 			SetNonPlayable();
-			GetComponentInChildren<SpriteRenderer>().color = Color.red;
+			playerIA.enabled = true;
 		}
 		GetComponentInChildren<SpriteRenderer>().sprite = playerData.playerSprite;
 	}
@@ -113,6 +121,14 @@ public class Player : MonoBehaviour {
 	public void SetStartPositions(StartPosition normal, StartPosition offensive){
 		normalStart = normal;
 		offensiveStart = offensive;
+	}
+
+	public bool IsNonPlayable(){
+		return nonPlayable;
+	}
+
+	public bool IsCurrentPlayer(){
+		return currentPlayer;
 	}
 
 	public void SetNonPlayable(){
@@ -128,10 +144,12 @@ public class Player : MonoBehaviour {
 	public void SetCurrentPlayer(){
 		SetPlayable();
 		spriteRenderer.color = Color.white;
+		currentPlayer = true;
 	}
 
 	public void SetNotCurrentPlayer(){
 		SetNonPlayable();
 		spriteRenderer.color = Color.grey;
+		currentPlayer = false;
 	}
 }
