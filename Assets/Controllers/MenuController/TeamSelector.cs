@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
@@ -67,7 +68,22 @@ public class TeamSelector : MonoBehaviour {
 	public void StartGame(){
 		GameObject ob = Instantiate(teamTransporterPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		TeamTransporter tTranspo = ob.GetComponent<TeamTransporter>();
-		tTranspo.SetTeams(team1, team2);
+
+		General.PlayerController cnt1 = GetTeamController("Team1Controller");
+		General.PlayerController cnt2 = GetTeamController("Team2Controller");
+
+		tTranspo.SetTeams(team1, cnt1, team2, cnt2);
 		SceneManager.LoadScene("Game");
+	}
+
+	General.PlayerController GetTeamController(string dropdown){
+		General.PlayerController c;
+		int val = GameObject.Find(dropdown).GetComponent<Dropdown>().value;
+		if(val == 0){
+			c = General.PlayerController.Human;
+		} else {
+			c = General.PlayerController.Computer;
+		}
+		return c;
 	}
 }
