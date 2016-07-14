@@ -34,7 +34,10 @@ public class PlayerIA : MonoBehaviour {
 			}
 		}
 
-		if(gameController.GetRemainingPlayerTime() <= 1f){
+		// If the time is running out OR the ball stop/will stop soon, shoot the ball
+		//float ballVelocity = Mathf.Abs(ball.GetComponent<Rigidbody2D>().velocity.magnitude);
+		float remTime = gameController.GetRemainingPlayerTime();
+		if(remTime <= 1f){
 			ShootAtBall();
 		}
 	}

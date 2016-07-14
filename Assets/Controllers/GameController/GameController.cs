@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
+	const float playerTime = 7f;
+
 	private bool gameStarted;
 
 	private PlayerData player1Data;
@@ -12,8 +14,6 @@ public class GameController : MonoBehaviour {
 
 	private float gameTime;
 	private float initTime;
-
-	private float playerTime = 7f;
 	private float initPlayerTime;
 
 	public GameObject playerPrefab;
