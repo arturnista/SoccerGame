@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
 	// Variables from game
 	private GameController gameController;
 	private SpriteRenderer spriteRenderer;
+	private PlayerSelection selection;
 
 	private bool nonPlayable;
 	private bool currentPlayer;
@@ -30,14 +31,16 @@ public class Player : MonoBehaviour {
 	void Awake () {
 		transform.parent = General.GetParent("Players");
 		gameController = GameObject.FindObjectOfType<GameController>();
-		spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+		spriteRenderer = transform.FindChild("Sprite").GetComponent<SpriteRenderer>();
+		selection = GetComponentInChildren<PlayerSelection>();
+		selection.SetActive(false);
 
 		thisRigidbody = GetComponent<Rigidbody2D>();
 		mass = thisRigidbody.mass;
 
 		playerIA = GetComponent<PlayerIA>();
 
-		isAiming = false;
+		SetAiming(false);
 		// In the start the player is not playable
 		// Wait for the start
 		SetNonPlayable();
@@ -46,8 +49,21 @@ public class Player : MonoBehaviour {
 	void Update () {
 		thisRigidbody.velocity = SoccerPhysics.ApplyPhysics(thisRigidbody.velocity, mass);
 
-		if(isAiming && !nonPlayable){
-			float ang = General.AngleBetweenPosition(transform.position, General.GetMousePosition());
+		if(isAiming){
+			if(nonPlayable){
+				SetAiming(false);
+				return;
+			}
+
+			Vector3 mousePos = General.GetMousePosition();
+			float distance = Vector2.Distance(transform.position, mousePos);
+			if(distance > padding){
+				selection.SetSelected();
+			} else {
+				selection.SetCanceled();
+			}
+
+			float ang = General.AngleBetweenPosition(transform.position, mousePos);
 			transform.eulerAngles = new Vector3(0f, 0f, ang);
 		}
 	}
@@ -56,14 +72,14 @@ public class Player : MonoBehaviour {
 		if(nonPlayable){
 			return;
 		}
-		isAiming = true;
+		SetAiming(true);
 	}
 		
 	void OnMouseUp(){
 		if(nonPlayable){
 			return;
 		}
-		isAiming = false;
+		SetAiming(false);
 		Vector3 mousePos = General.GetMousePosition();
 		float distance = Vector2.Distance(transform.position, mousePos);
 		if(distance > padding){
@@ -102,6 +118,11 @@ public class Player : MonoBehaviour {
 
 	public General.PlayerNumber GetPlayerNumber(){
 		return playerData.playerNumber;
+	}
+
+	void SetAiming(bool aiming){
+		isAiming = aiming;
+		selection.SetActive(aiming);
 	}
 
 	public void SetPlayerData(PlayerData plrData){
